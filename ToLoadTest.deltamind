@@ -1,0 +1,15 @@
+{"class": "Block", "id": 1, "parent_id": -1, "children": [2, 4, 10, 12], "pos": [153, 202], "size": [200, 100], "text": "\u041f\u0435\u0440\u0432\u044b\u0439 \u0431\u043b\u043e\u043a"};
+{"class": "Block", "id": 2, "parent_id": 1, "children": [6, 8], "pos": [881, 322], "size": [150, 100], "text": "\u041f\u043e\u0442\u043e\u043c\u043e\u043a 1"};
+{"class": "schemeText", "id": 4, "pos": [392, 388], "size": [243, 66], "text": "\u041f\u0435\u0440\u0432\u0430\u044f \u0440\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "schemeText", "id": 6, "pos": [1344, 271], "size": [141, 59], "text": "\u0412\u043d\u0443\u043a 1"};
+{"class": "Block", "id": 8, "parent_id": 2, "children": [13], "pos": [1223, 498], "size": [147, 78], "text": "\u0412\u043d\u0443\u043a 2"};
+{"class": "schemeText", "id": 10, "pos": [307, 527], "size": [364, 56], "text": "\u0412\u0442\u043e\u0440\u0430\u044f \u0440\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "Block", "id": 12, "parent_id": 1, "children": [], "pos": [161, 809], "size": [409, 71], "text": "\u0421\u043b\u0435\u0434\u0443\u044e\u0449\u0438\u0439 \u043f\u043e \u043f\u043e\u0440\u044f\u0434\u043a\u0443"};
+{"class": "Block", "id": 13, "parent_id": 8, "children": [], "pos": [1157, 664], "size": [231, 174], "text": "\u041d\u043e\u0432\u044b\u0439 \u0431\u043b\u043e\u043a"};
+{"class": "Connection", "id": 3, "type": "H", "parent": 1, "child": 2, "text": "\u0418\u0435\u0440\u0430\u0440\u0445\u0438\u044f"};
+{"class": "Connection", "id": 5, "type": "K", "parent": 1, "child": 4, "text": "\u0420\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "Connection", "id": 7, "type": "K", "parent": 2, "child": 6, "text": "\u0420\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "Connection", "id": 9, "type": "K", "parent": 2, "child": 8, "text": "\u0420\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "Connection", "id": 11, "type": "K", "parent": 1, "child": 10, "text": "\u0420\u0430\u0437\u043d\u043e\u0432\u0438\u0434\u043d\u043e\u0441\u0442\u044c"};
+{"class": "Connection", "id": 13, "type": "N", "parent": 1, "child": 12, "text": "\u041f\u043e\u0440\u044f\u0434\u043e\u043a"};
+{"class": "Connection", "id": 14, "type": "N", "parent": 8, "child": 13, "text": "\u041f\u043e\u0440\u044f\u0434\u043e\u043a"};
