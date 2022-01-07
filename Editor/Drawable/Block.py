@@ -1,7 +1,6 @@
 from Drawable.schemeText import schemeText
-from dataclass import dataclass
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPen, QFont, QBrush
+from PyQt5.QtGui import QPen, QFont
 from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QRect
 
@@ -50,7 +49,7 @@ class Block(schemeText):
 
 	def onDrag(self, cur_x, cur_y):
 		for child in self.children:
-			child.onDrag(cur_x + (child.pos[0] - self.pos[0]), cur_y + (child.pos[1] - self.pos[1]))
+			child.onDrag(cur_x, cur_y)
 		schemeText.onDrag(self, cur_x, cur_y)
 		self.__addChildButton.move(self.pos[0] + self.size[0], self.pos[1] + self.size[1] / 2 - 30)
 

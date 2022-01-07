@@ -7,6 +7,7 @@ from dataclass import dataclass
 from Drawable.schemeText import schemeText
 from Drawable.Block import Block
 from Drawable.Connection import Connection
+from Drawable.Interactive import Interactive
 
 
 class Controller:
@@ -51,6 +52,17 @@ class Controller:
 			elif j_obj['class'] == 'schemeText':
 				self.view.drawable_objects.append(schemeText(self.view, j_obj['text'], j_obj['size'],
 															 j_obj['pos'], j_obj['id']))
+			elif j_obj['class'] == 'Interactive':
+				inter_obj = Interactive(self.view, j_obj['text'],
+															  j_obj['size'], j_obj['pos'], j_obj['inter_type'], j_obj['id'])
+				if j_obj['inter_type'] == dataclass.COMBO_INTER_TYPE:
+					inter_obj.update_data(j_obj['pet_items'])
+					inter_obj.setComboItem(j_obj['value'])
+				elif j_obj['inter_type'] == dataclass.TOGGLE_INTER_TYPE:
+					if j_obj['value']:
+						inter_obj.toggle()
+				inter_obj.cur_value = j_obj['value']
+				self.view.drawable_objects.append(inter_obj)
 
 		for new_obj in self.view.drawable_objects:
 			if isinstance(new_obj, Block):
@@ -74,15 +86,15 @@ class Controller:
 												(parent_block.pos[0] + parent_block.size[0] + 10, parent_block.pos[1])))
 
 			parent_block.children.append(self.view.drawable_objects[-1])
-			self.view.drawable_objects.insert(0, Connection(self.view, '', (120, 30),
+			self.view.drawable_objects.insert(0, Connection(self.view, '', (150, 30),
 														 parent_block, self.view.drawable_objects[-1], conn_type))
 
 	def del_drawable_objects(self):
-		def recursively_find_children(obj):
-			if isinstance(obj, Block):
-				for_return = obj.children
+		def recursively_find_children(obj_):
+			if isinstance(obj_, Block):
+				for_return = obj_.children
 				if for_return:
-					for child in obj.children:
+					for child in obj_.children:
 						for_return += recursively_find_children(child)
 					return for_return
 			return []
@@ -114,7 +126,8 @@ class Controller:
 																	self.view.selected_objects()[0],
 																	self.view.selected_objects()[1],
 																	self.object_is_being_created))
-					self.view.selected_objects()[0].children.append(self.view.selected_objects()[1])
+					if isinstance(self.view.selected_objects()[0], Block):
+						self.view.selected_objects()[0].children.append(self.view.selected_objects()[1])
 					if isinstance(self.view.selected_objects()[1], Block):
 						if self.view.selected_objects()[1].block_parent_id == -1:
 							self.view.selected_objects()[1].block_parent_id = self.view.selected_objects()[0].id_
@@ -132,6 +145,10 @@ class Controller:
 															 'Новый текст',
 															 (150, 100),
 															 mouse_pos))
+			elif self.object_is_being_created in (dataclass.TEXT_INTER_TYPE,
+												  dataclass.TOGGLE_INTER_TYPE,
+												  dataclass.COMBO_INTER_TYPE):
+				self.view.drawable_objects.append(Interactive(self.view, 'Interactive Element', (150, 40), mouse_pos, self.object_is_being_created))
 			self.object_is_being_created = -1
 
 	def create_new_document(self):
@@ -150,5 +167,13 @@ class Controller:
 		else:
 			# Пользователь нажал на Cancel
 			pass
+
+	def edit_interactive(self, inter_object):
+		if isinstance(inter_object, Interactive):
+			new_data = self.view.inter_edit_dialog(inter_object)
+			if new_data:
+				inter_object.update_data(new_data)
+
+
 if __name__ == '__main__':
 	Controller()

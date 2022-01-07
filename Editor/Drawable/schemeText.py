@@ -1,7 +1,7 @@
 from dataclass import dataclass
 from PyQt5.QtCore import QRect
 from PyQt5.QtWidgets import *
-from PyQt5.QtGui import QPen, QFont, QBrush
+from PyQt5.QtGui import QPen, QFont
 from PyQt5.QtCore import Qt
 
 class schemeText:
@@ -17,6 +17,10 @@ class schemeText:
 		self.pos = pos
 		self.size = size
 		self.__calculate_new_margins()
+		# Нужны для корректного перемещения
+		self.offset_x = -1
+		self.offset_y = -1
+
 		self.label = QPlainTextEdit()
 		self.label.setGeometry(*pos, *size)
 		self.text = text
@@ -26,7 +30,7 @@ class schemeText:
 		self.resize_button = QPushButton(text='⇲', parent=self.window_master)
 		self.resize_button.setFixedHeight(30)
 		self.resize_button.setFixedWidth(30)
-		self.resize_button.setGeometry(self.pos[0] + self.size[0] - 25, self.pos[1] + self.size[1] - 25, 30, 30)
+		self.resize_button.setGeometry(self.pos[0] + self.size[0], self.pos[1] + self.size[1], 30, 30)
 		self.is_selected = False
 		self.is_being_resized = False
 		self.resize_button.clicked.connect(self.onResizeButtonClick)
@@ -59,7 +63,7 @@ class schemeText:
 		if cur_pressed_x > self.pos[0] and cur_pressed_y > self.pos[1]:
 			self.size = (cur_pressed_x - self.pos[0], cur_pressed_y - self.pos[1])
 			self.__calculate_new_margins()
-			self.resize_button.move(self.pos[0] + self.size[0] - 25, self.pos[1] + self.size[1] - 25)
+			self.resize_button.move(self.pos[0] + self.size[0], self.pos[1] + self.size[1])
 			self.label.resize(self.size[0], self.size[1])
 
 	def calculate_stroke_rect(self):
@@ -74,12 +78,18 @@ class schemeText:
 		self.text = self.label.toPlainText()
 		self.label.hide()
 		self.is_selected = False
+		self.offset_x = -1
+		self.offset_y = -1
 
 	def onDrag(self, cur_pressed_x, cur_pressed_y):
-		self.pos = (cur_pressed_x, cur_pressed_y)
+		if self.offset_x == -1 and self.offset_y == -1:
+			self.offset_x = self.pos[0] - self.window_master.original_press_x
+			self.offset_y = self.pos[1] - self.window_master.original_press_y
+			print(f'{"="*10} \n{self}. Current cursor pos: {cur_pressed_x};{cur_pressed_y} \n Current offset: {self.offset_x}; {self.offset_y}')
+		self.pos = (cur_pressed_x + self.offset_x, cur_pressed_y + self.offset_y)
 		self.__calculate_new_margins()
 		self.label.move(*self.pos)
-		self.resize_button.move(self.pos[0] + self.size[0] - 25, self.pos[1] + self.size[1] - 25)
+		self.resize_button.move(self.pos[0] + self.size[0], self.pos[1] + self.size[1])
 
 	def remove(self):
 		self.label.hide()
@@ -97,3 +107,6 @@ class schemeText:
 				'pos': list(self.pos),
 				'size': list(self.size),
 				'text': self.text}
+
+	def __str__(self):
+		return f'{self.__class__.__name__} #{self.id_}: {self.pos}'

@@ -2,9 +2,9 @@ import sys
 from PyQt5.QtCore import Qt, QRect, QTimer
 from PyQt5.QtWidgets import *
 from Design.MainWin import Ui_MainWindow
-from PyQt5.QtGui import QPainter, QPaintEvent, QPen, QMouseEvent, QResizeEvent, QPixmap, QBrush, QKeyEvent, QIcon, \
-	QCursor
+from PyQt5.QtGui import QPainter, QPaintEvent, QPen, QMouseEvent, QResizeEvent, QPixmap, QBrush, QKeyEvent, QIcon
 from Drawable.NewChildTypeDialog import newChildTypeDialog
+from Drawable.EditInteractiveDialog import EditInteractiveDialog
 from Drawable.Connection import Connection
 from dataclass import dataclass
 
@@ -46,35 +46,47 @@ class MainWindow(QMainWindow):
 		fileMenu.addAction(saveAction)
 		fileMenu.addAction(openAction)
 
-		addBlock = QAction(QIcon('Design/addBlockIcon.png'), 'Add Block', self)
+		addBlock = QAction(QIcon('Editor/Design/addBlockIcon.png'), 'Add Block', self)
 		addBlock.triggered.connect(lambda: self.controller.create_object(dataclass.BLOCK_TYPE))
 		self.ui.toolBar.addAction(addBlock)
 
-		addKindsConnection = QAction(QIcon('Design/addKindsConIcon.png'), 'Add Kinds Connection\nSelect a block and '
+		addKindsConnection = QAction(QIcon('Editor/Design/addKindsConIcon.png'), 'Add Kinds Connection\nSelect a block and '
 																	 'another element and then press this button', self)
 		addKindsConnection.triggered.connect(lambda: self.controller.create_object(dataclass.CONNECTION_KINDS_TYPE))
 		self.ui.toolBar.addAction(addKindsConnection)
 
-		addHierarchyConnection = QAction(QIcon('Design/addHierarchyIcon.png'), 'Add Hierarchy\nSelect a block and '
+		addHierarchyConnection = QAction(QIcon('Editor/Design/addHierarchyIcon.png'), 'Add Hierarchy\nSelect a block and '
 																		  'another element and then press this button. The first pressed '
 																		   'figure will be the parent, the second -- the child.',
-									 self)
+										 self)
 		addHierarchyConnection.triggered.connect(lambda: self.controller.create_object(dataclass.CONNECTION_HIER_TYPE))
 		self.ui.toolBar.addAction(addHierarchyConnection)
 
-		addOrderConnection = QAction(QIcon('Design/addOrderIcon.png'), 'Add Order\nSelect a block and '
+		addOrderConnection = QAction(QIcon('Editor/Design/addOrderIcon.png'), 'Add Order\nSelect a block and '
 																		  'another element and then press this button',
 									 self)
 		addOrderConnection.triggered.connect(lambda: self.controller.create_object(dataclass.CONNECTION_NUM_ORDER_TYPE))
 		self.ui.toolBar.addAction(addOrderConnection)
 
-		addText = QAction(QIcon('Design/addTextIcon.png'), 'Add Text', self)
+		addText = QAction(QIcon('Editor/Design/addTextIcon.png'), 'Add Text', self)
 		addText.triggered.connect(lambda: self.controller.create_object(dataclass.SCHEME_TEXT_TYPE))
 		self.ui.toolBar.addAction(addText)
 
-		removeObject = QAction(QIcon('Design/deleteDrawableObject.png'), 'Delete Object', self)
+		removeObject = QAction(QIcon('Editor/Design/deleteDrawableObject.png'), 'Delete Object', self)
 		removeObject.triggered.connect(self.controller.del_drawable_objects)
 		self.ui.toolBar.addAction(removeObject)
+
+		addTextEdit = QAction(QIcon('Editor/Design/addInterText.png'), 'Add an interactive Text field', self)
+		addTextEdit.triggered.connect(lambda: self.controller.create_object(dataclass.TEXT_INTER_TYPE))
+		self.ui.toolBar.addAction(addTextEdit)
+
+		addToggle = QAction(QIcon('Editor/Design/addInterToggle.png'), 'Add an interactive Toggle', self)
+		addToggle.triggered.connect(lambda: self.controller.create_object(dataclass.TOGGLE_INTER_TYPE))
+		self.ui.toolBar.addAction(addToggle)
+
+		addCombo = QAction(QIcon('Editor/Design/addInterCombo.png'), 'Add an interactive ComboBox', self)
+		addCombo.triggered.connect(lambda: self.controller.create_object(dataclass.COMBO_INTER_TYPE))
+		self.ui.toolBar.addAction(addCombo)
 
 		self.showMaximized()
 
@@ -119,8 +131,8 @@ class MainWindow(QMainWindow):
 		if self.pressed:
 			self.cur_pressed_x = event.x()
 			self.cur_pressed_y = event.y()
-			if abs(self.cur_pressed_x - self.original_press_x) >= 30 \
-				and abs(self.cur_pressed_y - self.original_press_y) >= 30:
+			if abs(self.cur_pressed_x - self.original_press_x) >= 10 \
+				and abs(self.cur_pressed_y - self.original_press_y) >= 10:
 					for i in self.drawable_objects:
 						if i.is_selected:
 							if not i.is_being_resized:
@@ -174,7 +186,7 @@ class MainWindow(QMainWindow):
 
 	def show_message_on_saving(self):
 		message = QMessageBox(QMessageBox.NoIcon, 'Saved', 'Your mindmap has been saved.', QMessageBox.Ok, self)
-		message.setIconPixmap(QPixmap('Design/saveIcon.png'))
+		message.setIconPixmap(QPixmap('Editor/Design/saveIcon.png'))
 		message.setDefaultButton(QMessageBox.Ok)
 		message.exec_()
 
@@ -206,7 +218,16 @@ class MainWindow(QMainWindow):
 			user_choice = self.ask_whether_to_save_current_file()
 			if user_choice == QMessageBox.Save:
 				self.controller.save_objects_into_file()
-		QMainWindow.closeEvent(self, event)
+				QMainWindow.closeEvent(self, event)
+			elif user_choice == QMessageBox.Cancel:
+				pass
+			else:
+				QMainWindow.closeEvent(self, event)
+
+	def inter_edit_dialog(self, inter_obj):
+		dial = EditInteractiveDialog(self, inter_obj)
+		dial.exec_()
+		return dial.new_data
 
 
 if __name__ == '__main__':

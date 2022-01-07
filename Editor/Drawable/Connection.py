@@ -58,13 +58,33 @@ class Connection(schemeText):
 		start_pos = [0, 0]
 		end_pos = [0, 0]
 
-		for coord in 0,1:
-			if self.child_elem.pos[coord] < self.parent_block.pos[coord]:
-				end_pos[coord] = self.child_elem.pos[coord] + self.child_elem.size[coord]
-				start_pos[coord] = self.parent_block.pos[coord]
-			else:
-				end_pos[coord] = self.child_elem.pos[coord]
-				start_pos[coord] = self.parent_block.pos[coord] + self.parent_block.size[coord]
+		# Расчет высоты привязок
+		if self.child_elem.pos[1] in range(self.parent_block.pos[1], self.parent_block.pos[1] + self.parent_block.size[1]):
+			start_pos[1] = int(self.parent_block.pos[1] + (self.parent_block.size[1] / 2))
+			end_pos[1] = int(self.child_elem.pos[1] + (self.child_elem.size[1] / 2))
+		elif self.child_elem.pos[1] < self.parent_block.pos[1]:
+			start_pos[1] = self.parent_block.pos[1]
+			end_pos[1] = self.child_elem.pos[1] + self.child_elem.size[1]
+		else:
+			start_pos[1] = self.parent_block.pos[1] + self.parent_block.size[1]
+			end_pos[1] = self.child_elem.pos[1]
+
+		# Расчет x-координаты привязок
+		if self.child_elem.pos[0] in range(self.parent_block.pos[0] - self.child_elem.size[0],
+										   self.parent_block.pos[0] + self.parent_block.size[0]):
+			start_pos[0] = int(self.parent_block.pos[0] + (self.parent_block.size[0] / 2))
+			end_pos[0] = int(self.child_elem.pos[0] + (self.child_elem.size[0] / 2))
+		elif self.child_elem.pos[0] < self.parent_block.pos[0]:
+			if self.child_elem.pos[0] + self.child_elem.size[0] > self.parent_block.pos[0]:
+				start_pos[0] = int(self.parent_block.pos[0] + self.parent_block.size[0] / 2)
+				end_pos[0] = self.child_elem.pos[0] + self.child_elem.size[0]
+			elif self.child_elem.pos[0] + self.child_elem.size[0] < self.parent_block.pos[0]:
+				start_pos[0] = self.parent_block.pos[0]
+				end_pos[0] = self.child_elem.pos[0] + self.child_elem.size[0]
+		else:
+			start_pos[0] = self.parent_block.pos[0] + self.parent_block.size[0]
+			end_pos[0] = self.child_elem.pos[0]
+
 		return start_pos, end_pos
 
 	def calculate_text_rect_pos(self):
