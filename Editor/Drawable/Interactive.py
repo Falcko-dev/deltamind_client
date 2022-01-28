@@ -84,9 +84,12 @@ class Interactive(schemeText):
 
 	def remove(self):
 		schemeText.remove(self)
+		self.__pet_widget.hide()
 		self.__pet_widget.deleteLater()
+		self.__edit_button.hide()
 		self.__edit_button.deleteLater()
 		if self.inter_type == dataclass.COMBO_INTER_TYPE:
+			self.__label.hide()
 			self.__label.deleteLater()
 
 	def serialize_into_json(self):
