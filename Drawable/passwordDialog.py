@@ -15,5 +15,5 @@ class PasswordDialog(QDialog):
 		self.result = ''
 
 	def ok_button_clicked(self, event):
-		self.result = self.ui.lineEdit.text()
+		self.result = self.ui.lineEdit.text() or '1'
 		self.accept()

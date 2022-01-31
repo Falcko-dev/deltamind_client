@@ -17,6 +17,6 @@ class UploadDataDialog(QDialog):
 	def fill_data(self, event):
 		self.result['nick'] = self.ui.nicknameLineEdit.text()
 		self.result['title'] = self.ui.mapTitleLineEdit.text()
-		self.result['user_pass'] = self.ui.userPassLineEdit.text()
-		self.result['admin_pass'] = self.ui.adminPassLineEdit.text()
+		self.result['user_pass'] = self.ui.userPassLineEdit.text() or '1'
+		self.result['admin_pass'] = self.ui.adminPassLineEdit.text() or '1'
 		self.accept()

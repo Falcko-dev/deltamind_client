@@ -18,7 +18,6 @@ class MainWindow(QMainWindow):
 		self.ui = Ui_MainWindow()
 		self.ui.setupUi(self)
 		self.ui.searchButton.clicked.connect(self.search_event)
-		self.ui.searchMapsScroll.setWidgetResizable(True)
 		self.ui.browseMapsFolderButton.clicked.connect(self.controller.open_file_manager)
 		self.ui.createNewMapButton.clicked.connect(self.controller.create_new_map)
 
@@ -43,15 +42,6 @@ class MainWindow(QMainWindow):
 												   self.ui.tabWidget.size().width(),
 												   self.ui.tabWidget.size().height()))
 		self.ui.verticalLayoutWidget_2.resize(self.ui.tabWidget.size())
-
-	def fill_search_scroll(self, maps):
-		for i in self.ui.scrollAreaWidgetContents.layout().count():
-			self.ui.scrollAreaWidgetContents.layout().removeItem(self.ui.scrollAreaWidgetContents.layout().itemAt(i))
-		for map_ in maps:
-			self.ui.scrollAreaWidgetContents.layout().addWidget(MapWidget(self, map_['title'],
-																		  map_['author_nick'],
-																		  map_['date']))
-		self.update()
 
 	def search_event(self):
 		search_str = self.ui.searchStringLineEdit.text()
@@ -108,6 +98,14 @@ class MainWindow(QMainWindow):
 			self.myMapsTabContainer = QWidget()
 			self.myMapsTabContainer.setLayout(layout)
 			self.ui.myMapsScrollArea.setWidget(self.myMapsTabContainer)
+
+	def update_search_tab(self, maps):
+		layout = QVBoxLayout()
+		for index, map_ in enumerate(maps):
+			layout.addWidget(MapWidget(self, map_['map_id'], map_['title'], map_['author_nick'], map_['creating_date'], True))
+		self.searchTabContainer = QWidget()
+		self.searchTabContainer.setLayout(layout)
+		self.ui.searchMapsScroll.setWidget(self.searchTabContainer)
 
 	def show_info_message(self, text):
 		message = QMessageBox(QMessageBox.Information, 'Information',

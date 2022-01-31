@@ -1,7 +1,6 @@
-from PyQt5.QtGui import QColor
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QRect
 from Design.AnswersWidget import Ui_Form
-from PyQt5.QtWidgets import QWidget, QTableWidgetItem
+from PyQt5.QtWidgets import QWidget, QTableWidgetItem, QHeaderView
 
 
 class UsersAnswersWidget(QWidget):
@@ -14,6 +13,7 @@ class UsersAnswersWidget(QWidget):
 		self.ui.tableWidget.setColumnCount(len(elems_ids) + 1)
 		self.ui.tableWidget.setRowCount(len(answers))
 		self.ui.tableWidget.setHorizontalHeaderLabels(['Никнейм пользователя'] + [str(i) for i in elems_ids])
+		self.ui.tableWidget.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
 		for index, answer in enumerate(answers):
 			name_item = QTableWidgetItem(answer[0]['map_author_nick'])
 			name_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
@@ -25,3 +25,11 @@ class UsersAnswersWidget(QWidget):
 					value_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
 					self.ui.tableWidget.setItem(index, cur_column_id,
 												value_item)
+
+	def resizeEvent(self, a0):
+		QWidget.resizeEvent(self, a0)
+		self.ui.gridLayout.setGeometry(QRect(self.ui.gridLayout.geometry().x(),
+											 self.ui.gridLayout.geometry().y(),
+											 self.width(),
+											 self.height()))
+		self.ui.gridLayoutWidget.resize(self.size())

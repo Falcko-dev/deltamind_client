@@ -22,17 +22,13 @@ class Controller:
 	def search_map(self, searchstring):
 		maps = self.handle_web_errors(self.model.search_map, None, searchstring)
 		if maps:
-			lay = QVBoxLayout(self.view)
-			for map_ in maps:
-				lay.addWidget(MapWidget(self.view, map_['map_id'], map_['title'], map_['author_nick'], map_['creating_date'], True), alignment=Qt.AlignTop)
-			self.view.ui.scrollAreaWidgetContents.setLayout(lay)
+			self.view.update_search_tab(maps)
 
 	def download_map(self, map_id, temporal=False):
 		password = self.view.get_password_from_user()
-		# Странная проверка равенства на случай, если пароль -- пустая строка
-		if password != None:
+		if password:
 			map_ = self.handle_web_errors(self.model.download_map, None, map_id, password)
-			if map:
+			if map_:
 				if not temporal:
 					FILE = open(f'UserMaps/{map_["title"]}_downloaded_{datetime.datetime.now().strftime("%d-%m-%Y_%H:%M")}.deltamind', 'w')
 				else:
@@ -40,7 +36,7 @@ class Controller:
 				FILE.write(json.dumps({'author': map_['author_nick'], 'date': map_['creating_date'], 'class': 'meta'}) + ';\n')
 				FILE.write(map_['map_code'])
 				FILE.close()
-			self.view.show_info_message('Ваш файл был загружен')
+				self.view.show_info_message('Ваш файл был загружен')
 
 	def upload_map(self, map_filepath: str, fork_id=-1):
 		if map_filepath:
